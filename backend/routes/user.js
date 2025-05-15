@@ -137,29 +137,31 @@ router.put("/", authMiddleware, async (req, res) => {
 // FOR GETTING USERS WITH FILTER QUERY
 
 router.get("/bulk", async (req, res) => {
-  const filter = req.query.filter || "";
+  // 1. Grab & trim the incoming filter
+  const rawFilter = (req.query.filter || "").trim();
 
-  const users = await User.find({
-    $or: [
-      {
-        firstName: {
-          $regex: filter,
-        },
-      },
-      {
-        lastName: {
-          $regex: filter,
-        },
-      },
-    ],
-  });
+  // 2. If no filter, just return everything
+  let docs;
+  if (!rawFilter) {
+    docs = await User.find({});
+  } else {
+    // 3. Build a case-insensitive regex
+    const regex = new RegExp(rawFilter, "i");
+    docs = await User.find({
+      $or: [
+        { firstName: { $regex: regex } },
+        { lastName:  { $regex: regex } },
+      ],
+    });
+  }
 
+  // 4. Map into the shape you want, and use "users" as the key
   res.json({
-    user: users.map((user) => ({
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      _id: user._id,
+    users: docs.map(u => ({
+      _id:      u._id,
+      username: u.username,
+      firstName: u.firstName,
+      lastName:  u.lastName,
     })),
   });
 });

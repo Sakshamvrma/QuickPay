@@ -15,7 +15,7 @@ export const Appbar = () => {
       navigate("/signin"); // Redirect to sign-in page if token doesn't exist
     } else {
       axios
-        .get(import.meta.env.VITE_SERVER_URL + "/api/v1/user/getUser", {
+        .get("http://localhost:3000/api/v1/user/getUser", {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -35,7 +35,7 @@ export const Appbar = () => {
     <div className="shadow h-14 flex justify-between items-center md:px-10">
       <Link to={"/dashboard"}>
         <div className="flex flex-col justify-center h-full ml-4 font-bold">
-          PayTM App
+          Quick Pay
         </div>
       </Link>
       <div className="flex items-center justify-center gap-2">
