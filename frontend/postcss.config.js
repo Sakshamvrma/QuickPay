@@ -4,3 +4,4 @@ export default {
     autoprefixer: {},
   },
 }
+// Compare this snippet from paytm-clone/frontend/package.json:
